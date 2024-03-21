@@ -13,6 +13,7 @@ NodeJS Chat Server is a real-time chat server built with Node.js. This project a
 - Clone the repository: `git clone https://github.com/gevorgabgaryan/NodeJS-Chat-Server.git`
 - Change directory to the project folder: `cd NodeJS-Chat-Server`
 - Install dependencies: `npm install`
+- Copy .env-sample .env
 
 ### Executing program
 - Start the server: `npm start`
