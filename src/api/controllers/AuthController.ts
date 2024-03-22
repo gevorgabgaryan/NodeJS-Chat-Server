@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import AuthService from "../services/AuthService";
+import { Request, Response } from 'express';
+import AuthService from '../services/AuthService';
 
 class AuthController {
   static async login(req: Request, res: Response) {
@@ -12,7 +12,7 @@ class AuthController {
     } catch (e) {
       console.log(e);
       res.status(500).json({
-        message: "System error",
+        message: 'System error',
       });
     }
   }
