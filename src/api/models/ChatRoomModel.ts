@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IChatRoom extends Document {
   _id: mongoose.Types.ObjectId;
@@ -19,6 +19,6 @@ const ChatRoomSchema: Schema = new Schema<IChatRoom>(
   },
 );
 
-const ChatRoom = mongoose.model<IChatRoom>("ChatRoom", ChatRoomSchema);
+const ChatRoom = mongoose.model<IChatRoom>('ChatRoom', ChatRoomSchema);
 
 export default ChatRoom;

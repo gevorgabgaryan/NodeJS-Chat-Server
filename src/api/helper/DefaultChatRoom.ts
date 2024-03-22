@@ -1,19 +1,22 @@
-import mongoose from "mongoose";
-import ChatRoom from "../models/ChatRoomModel";
-import config from "../../config";
+import config from '../../config';
+import ChatRoom from '../models/ChatRoomModel';
 
 class DefaultChatRoom {
   static async init() {
     try {
-      const roomCount = await ChatRoom.countDocuments();
-      if (roomCount === 0) {
-        const defaultRoom = new ChatRoom({
-          name: "Main",
+      let defaultRoom = await ChatRoom.findOne({ name: 'Main' });
+      if (!defaultRoom) {
+        defaultRoom = new ChatRoom({
+          name: 'Main',
         });
         await defaultRoom.save();
+        console.log('Default chat room created.');
+      } else {
+        console.log('Default chat room already exists.');
       }
+      config.defaultRoomId = defaultRoom._id.toString();
     } catch (error) {
-      console.error("Error creating default chat room:", error);
+      console.error('Error creating or fetching default chat room:', error);
     }
   }
 }

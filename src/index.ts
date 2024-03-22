@@ -1,6 +1,6 @@
-import API from "./api";
-import MongooseService from "./databases/MongooseService";
-import DefaultChatRoom from "./api/helper/DefaultChatRoom";
+import API from './api';
+import MongooseService from './databases/MongooseService';
+import DefaultChatRoom from './api/helper/DefaultChatRoom';
 
 (async () => {
   try {
