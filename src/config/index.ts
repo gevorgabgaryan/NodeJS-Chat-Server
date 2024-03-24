@@ -11,6 +11,7 @@ const config = {
   },
   defaultRoomId: '',
   wsPort: process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10) : 1990,
+  redisUrl: `redis://localhost:${process.env.REDIS_PORT ?? 6379}`
 };
 
 export default config;
