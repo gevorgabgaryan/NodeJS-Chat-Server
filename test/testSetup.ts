@@ -1,11 +1,15 @@
 jest.mock('../src/api/models/ChatMessageModel', () => {
-  const mockSave = jest.fn().mockResolvedValue({
-    _id: 'mockId',
-    roomId: 'defaultRoomIdMock',
-    sender: 'mockSender',
-    message: 'mockMessage',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+  const mockSave = jest.fn().mockImplementation(function () {
+    return {
+      entitize: jest.fn().mockReturnValue({
+        _id: 'mockId',
+        roomId: 'defaultRoomIdMock',
+        sender: 'mockSender',
+        message: 'mockMessage',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }),
+    };
   });
 
   const entitize = jest.fn().mockReturnValue({

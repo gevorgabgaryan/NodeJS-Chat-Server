@@ -1,6 +1,6 @@
 import config from '../../config';
 import ChatMessage from '../models/ChatMessageModel';
-import { escapeRegExp } from '../utils';
+import { escapeRegExp } from '../../utils';
 
 class ChatService {
   static async saveMessage(message: string, sender: string) {
@@ -10,7 +10,8 @@ class ChatService {
       message,
     });
 
-    await newMessage.save();
+    const savedMessage = await newMessage.save();
+    return savedMessage.entitize('createdAt', 'updatedAt');
   }
 
   static async fetchMessages(

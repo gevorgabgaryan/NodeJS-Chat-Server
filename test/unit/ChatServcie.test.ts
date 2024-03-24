@@ -12,9 +12,10 @@ describe('ChatService', () => {
     const message = 'Hello, world!';
     const sender = 'User123';
 
-    await ChatService.saveMessage(message, sender);
+    const result = await ChatService.saveMessage(message, sender);
 
     expect(ChatMessage).toHaveBeenCalledTimes(1);
+    expect(result).toBeDefined();
   });
 
   it('should fetch messages with pagination and return formatted results', async () => {

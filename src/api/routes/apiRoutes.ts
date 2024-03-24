@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import AuthController from '../controllers/AuthController';
 import ChatController from '../controllers/ChatController';
-import { checkAuthorization } from '../middlewares/checkAuthorization';
+import { checkAuthorization } from '../middlewares/checkAuthorizationMiddleware';
 import {
   validateAddMessage,
   validateCredentials,
   validateGetMessages,
-} from '../middlewares/validator';
+} from '../middlewares/validatorMiddleware';
 
 const apiRoutes = Router();
 

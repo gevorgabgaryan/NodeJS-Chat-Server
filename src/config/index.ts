@@ -10,6 +10,7 @@ const config = {
     dbName: process.env.MONGO_DB_NAME,
   },
   defaultRoomId: '',
+  wsPort: process.env.WS_PORT ? parseInt(process.env.WS_PORT, 10) : 1990,
 };
 
 export default config;
