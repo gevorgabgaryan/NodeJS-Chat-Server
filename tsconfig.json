@@ -9,6 +9,9 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false,
-    "strict": true
-  }
+    "strict": true,
+  },
+  "exclude": [
+    "test",
+  ]
 }

@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  app:
+    container_name: nodejs-chat-server
+    build: .
+    ports:
+      - "${PORT}:${PORT}"
+      - "${WS_PORT}:${WS_PORT}"
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  mongo-data:
+    driver: local
