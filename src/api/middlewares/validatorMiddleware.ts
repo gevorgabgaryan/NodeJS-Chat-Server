@@ -1,20 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import Joi from 'joi';
-
-const credentialsSchema = Joi.object({
-  username: Joi.string().alphanum().min(3).max(30).required(),
-  password: Joi.string().min(6).max(30).required(),
-});
-
-export const getMessagesSchema = Joi.object({
-  page: Joi.number().required(),
-  itemsPerPage: Joi.number().required().max(100),
-  keyword: Joi.string().max(100),
-});
-
-export const addMessageSchema = Joi.object({
-  message: Joi.string().required().max(300),
-});
+import {
+  addMessageSchema,
+  credentialsSchema,
+  getMessagesSchema,
+  objectIdParamsSchema,
+} from '../../lib/validator';
 
 export const validateCredentials = (
   req: Request,
@@ -63,6 +53,26 @@ export const validateAddMessage = (
     return res.status(400).json({ message: 'body required' });
   }
   const { error } = addMessageSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({
+      message: error.details[0].message,
+    });
+  }
+
+  next();
+};
+
+
+export const validateParamsObjectId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.params) {
+    return res.status(400).json({ message: 'params required' });
+  }
+  const { error } = objectIdParamsSchema.validate(req.params);
 
   if (error) {
     return res.status(400).json({

@@ -1,6 +1,7 @@
 import config from '../../config';
 import ChatMessage from '../models/ChatMessageModel';
-import { escapeRegExp } from '../utils';
+import { escapeRegExp } from '../../utils';
+import { WebSocketService } from '../../websocket';
 
 class ChatService {
   static async saveMessage(message: string, sender: string) {
@@ -10,7 +11,8 @@ class ChatService {
       message,
     });
 
-    await newMessage.save();
+    const savedMessage = await newMessage.save();
+    return savedMessage.entitize('createdAt', 'updatedAt');
   }
 
   static async fetchMessages(
@@ -39,6 +41,16 @@ class ChatService {
       messages: messages.map((e) => e.entitize('createdAt', 'updatedAt')),
       totalMessagesCount,
     };
+  }
+
+  static async deleteMessage(
+    id: string
+  ) {
+    const { deletedCount } = await ChatMessage.deleteOne({ _id: id })
+    if (deletedCount === 0) {
+      throw new Error('Message not found')
+    }
+    WebSocketService.deleteMessage(id);
   }
 }
 

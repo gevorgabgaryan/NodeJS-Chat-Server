@@ -5,8 +5,11 @@ class ChatController {
   static async postMessage(req: Request, res: Response) {
     try {
       const { message } = req.body;
-      await ChatService.saveMessage(message, req.username!);
-      res.status(201).send({ message: 'Message posted successfully' });
+      const savedMessage = await ChatService.saveMessage(
+        message,
+        req.username!,
+      );
+      res.status(201).send({ message: savedMessage });
     } catch (e) {
       console.log(e);
       res.status(500).json({ message: 'Failed to post message' });
@@ -29,6 +32,17 @@ class ChatController {
     } catch (e) {
       console.log(e);
       res.status(500).json({ message: 'Failed to fetch messages' });
+    }
+  }
+
+  static async deleteMessage(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await ChatService.deleteMessage(id);
+      res.status(200).json({ status: true });
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ message: 'Message not found' });
     }
   }
 }
