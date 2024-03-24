@@ -2,13 +2,31 @@ import { WebSocketServer } from 'ws';
 import config from '../config';
 import { UserManager } from './UserManager';
 import { RequestsManager } from './RequestsManager';
+import Redis from 'ioredis';
+
 
 const userManager = UserManager.getInstance();
 const requestsManager = new RequestsManager();
 export class WebSocketService {
   private wsServer: WebSocketServer | null = null;
 
-  constructor() {}
+  constructor() {
+
+
+
+const redisSub = new Redis(config.redisUrl);
+
+    redisSub.subscribe('new-message', (err) => {
+      if (err) console.error('Failed to subscribe to the chatMessages channel', err);
+    });
+
+
+    redisSub.on('message', (channel, message) => {
+      if (channel === 'new-message') {
+        this.broadcastMessage(JSON.parse(message));
+      }
+    });
+  }
 
   async init(): Promise<void> {
     this.wsServer = new WebSocketServer({ port: config.wsPort });
@@ -30,6 +48,10 @@ export class WebSocketService {
     });
 
     console.log(`WebSocket server is running on port ${config.wsPort}`);
+  }
+
+  broadcastMessage(data: any) {
+    userManager.sendToAll(data)
   }
 
   static deleteMessage(id: string): void {

@@ -4,6 +4,8 @@ import { WebSocket } from 'ws';
 import { AuthenticatedWebSocket } from './interface/AuthenticatedWebSocket';
 import { addMessageSchema, tokenSchema } from '../lib/validator';
 import ChatService from '../api/services/ChatService';
+import Redis from 'ioredis';
+import config from '../config';
 
 export class RequestsManager {
   private callsList: { [key: string]: any } = {};
@@ -44,6 +46,8 @@ export class RequestsManager {
     this.registerCall(
       'new-message',
       async (socket: AuthenticatedWebSocket, params: { message: string }) => {
+
+
         try {
           const { error } = addMessageSchema.validate(params);
           if (error) {
@@ -62,10 +66,15 @@ export class RequestsManager {
             socket.username,
           );
 
-          this.userManager.sendToAll({
+          const data = {
             event: 'new-message',
             message: savedMessage,
-          });
+          }
+
+          this.userManager.sendToAll(data);
+
+          const redisPub = new Redis(config.redisUrl);
+           redisPub.publish('chatMessages', JSON.stringify(data));
         } catch (e) {
           console.error(e);
           this.send(socket, { error: true, message: 'Unexpected error' });
