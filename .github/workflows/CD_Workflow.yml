@@ -1,0 +1,45 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Deploy on Dev
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy_on_dev:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+      
+      - name: Create customer Env file
+        working-directory: ./customer
+        run: |
+          touch .env
+          echo PORT=${{ secrets.PORT }} >> .env
+          echo JWT_SECRET =${{ secrets.JWT_SECRET }} >> .env
+          echo JWT_EXPIRE_IN =${{ secrets.JWT_EXPIRE_IN }} >> .env
+          echo MONGO_DB_URL =${{ secrets.MONGO_DB_URL }} >> .env
+          echo MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }} >> .env
+          echo WS_PORT=${{ secrets.WS_PORT }} >> .env
+          cat .env
+          
+      - name: Generate deployment package
+        run: |
+          zip -r deploy.zip . -x '*.git'
+      
+      - name: Deploy on Elastic beanstalk QA Env
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: Node_CHAT_QA
+          environment_name: Node_CHAT_QA-env
+          version_label: "ver-${{ github.sha }}"
+          region: eu-central-1
+          deployment_package: deploy.zip
+  
