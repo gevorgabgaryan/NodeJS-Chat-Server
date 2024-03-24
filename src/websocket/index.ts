@@ -3,9 +3,8 @@ import config from '../config';
 import { UserManager } from './UserManager';
 import { RequestsManager } from './RequestsManager';
 
-const userManager = new UserManager();
+const userManager = UserManager.getInstance();
 const requestsManager = new RequestsManager();
-
 export class WebSocketService {
   private wsServer: WebSocketServer | null = null;
 
@@ -31,5 +30,14 @@ export class WebSocketService {
     });
 
     console.log(`WebSocket server is running on port ${config.wsPort}`);
+  }
+
+  static deleteMessage(id: string): void {
+    userManager.sendToAll({
+      event: 'delete-message',
+      message: {
+        id
+      },
+    });
   }
 }

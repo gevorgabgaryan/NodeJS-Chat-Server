@@ -34,6 +34,17 @@ class ChatController {
       res.status(500).json({ message: 'Failed to fetch messages' });
     }
   }
+
+  static async deleteMessage(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      await ChatService.deleteMessage(id);
+      res.status(200).json({ status: true });
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ message: 'Message not found' });
+    }
+  }
 }
 
 export default ChatController;

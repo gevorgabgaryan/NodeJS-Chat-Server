@@ -3,6 +3,7 @@ import {
   addMessageSchema,
   credentialsSchema,
   getMessagesSchema,
+  objectIdParamsSchema,
 } from '../../lib/validator';
 
 export const validateCredentials = (
@@ -52,6 +53,26 @@ export const validateAddMessage = (
     return res.status(400).json({ message: 'body required' });
   }
   const { error } = addMessageSchema.validate(req.body);
+
+  if (error) {
+    return res.status(400).json({
+      message: error.details[0].message,
+    });
+  }
+
+  next();
+};
+
+
+export const validateParamsObjectId = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  if (!req.params) {
+    return res.status(400).json({ message: 'params required' });
+  }
+  const { error } = objectIdParamsSchema.validate(req.params);
 
   if (error) {
     return res.status(400).json({

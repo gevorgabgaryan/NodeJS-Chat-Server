@@ -12,6 +12,8 @@ jest.mock('../src/api/models/ChatMessageModel', () => {
     };
   });
 
+  const mockDeleteOne = jest.fn().mockResolvedValue({ deletedCount: 1 });
+
   const entitize = jest.fn().mockReturnValue({
     id: 'mockId',
     roomId: 'defaultRoomIdMock',
@@ -32,6 +34,7 @@ jest.mock('../src/api/models/ChatMessageModel', () => {
     sort: jest.fn().mockImplementation(() => Promise.resolve([mockInstance])),
     exec: jest.fn().mockResolvedValue([mockInstance]),
     countDocuments: jest.fn().mockResolvedValue(1),
+    deleteOne: mockDeleteOne,
   };
 
   const mock = jest.fn().mockImplementation(() => mockInstance);
@@ -47,3 +50,12 @@ jest.mock('../src/config', () => ({
   JWTSecret: 'secret',
   JWTExpireIn: '1h',
 }));
+
+
+jest.mock('../src/websocket', () => {
+  return {
+    WebSocketService: {
+      deleteMessage: jest.fn(),
+    },
+  };
+});

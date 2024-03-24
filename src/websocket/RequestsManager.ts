@@ -10,7 +10,7 @@ export class RequestsManager {
   private userManager: UserManager;
 
   constructor() {
-    this.userManager = new UserManager();
+    this.userManager =  UserManager.getInstance();
     this.initCalls();
   }
 
@@ -63,7 +63,7 @@ export class RequestsManager {
           );
 
           this.userManager.sendToAll({
-            event: 'newMessage',
+            event: 'new-message',
             message: savedMessage,
           });
         } catch (e) {
