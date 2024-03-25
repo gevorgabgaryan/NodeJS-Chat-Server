@@ -2,6 +2,7 @@ import config from '../../config';
 import ChatMessage from '../models/ChatMessageModel';
 import { escapeRegExp } from '../../utils';
 import { WebSocketService } from '../../websocket';
+import { NotFoundError } from '../../errors/NotFoundError';
 
 class ChatService {
   static async saveMessage(message: string, sender: string) {
@@ -43,12 +44,10 @@ class ChatService {
     };
   }
 
-  static async deleteMessage(
-    id: string
-  ) {
-    const { deletedCount } = await ChatMessage.deleteOne({ _id: id })
+  static async deleteMessage(id: string) {
+    const { deletedCount } = await ChatMessage.deleteOne({ _id: id });
     if (deletedCount === 0) {
-      throw new Error('Message not found')
+      throw new NotFoundError('Message not found');
     }
     WebSocketService.deleteMessage(id);
   }

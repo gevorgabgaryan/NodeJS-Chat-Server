@@ -38,6 +38,12 @@ Make sure you have the following installed on your machine:
 
    1. Build and start the application with Docker Compose: `docker-compose up --build -d`
 
+   2.  Build and start the application with Postman:
+       -- `docker-compose up -d mongo redis`
+       - npm run build
+       - pm2 start ecosystem.config.js
+
+
    2. The application will be running on
       -  http://localhost:4000
       -  ws://localhost:1990
@@ -45,6 +51,7 @@ Make sure you have the following installed on your machine:
 ### Testing
 
 - Execute tests using: `npm test`
+- Test websocket  `artillery run websocket-test.yml`
 
 ### Using Postman for API Testing
 

@@ -5,15 +5,9 @@ class AuthController {
   static async login(req: Request, res: Response) {
     try {
       const { username, password } = req.body;
-      const token = await AuthService.login(username, password);
-      res.status(200).json({
-        token,
-      });
+      res.promisify!(await AuthService.login(username, password));
     } catch (e) {
-      console.log(e);
-      res.status(500).json({
-        message: 'System error',
-      });
+      res.promisify!(Promise.reject(e));
     }
   }
 }

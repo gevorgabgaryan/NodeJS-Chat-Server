@@ -2,6 +2,8 @@ import API from './api';
 import MongooseService from './databases/MongooseService';
 import DefaultChatRoom from './api/helper/DefaultChatRoom';
 import { WebSocketService } from './websocket';
+import logger from './lib/logger';
+import { BaseError } from './errors/BaseError';
 
 (async () => {
   try {
@@ -11,19 +13,31 @@ import { WebSocketService } from './websocket';
     const webSocketService = new WebSocketService();
     await webSocketService.init();
   } catch (e) {
-    console.log(e);
+    logger.info(e);
     process.exit(1);
   }
 })();
 
-// TODO: Add Logger with Winston
-// 1. Install Winston: Run `npm install winston`.
-// 2. Create a logger configuration: Set up different transports for development and production (e.g., console and file).
-// 3. Implement logging throughout the application: Replace console.log statements with logger.info or logger.error as appropriate.
-// 4. Use middleware for logging incoming requests: Consider using `morgan` with Winston for HTTP request logging.
+process.on(
+  'unhandledRejection',
+  (reason: {} | null | undefined, promise: Promise<any>) => {
+    const message =
+      reason instanceof Error ? reason.message : 'Unhandled Promise Rejection';
+    const errorDetails =
+      reason instanceof Error ? reason.stack : JSON.stringify(reason);
 
-// TODO: Implement Centralized Error Handling
-// 1. Create an error handling middleware: This should catch any errors thrown in the application.
-// 2. Standardize error response: Ensure the middleware sends responses in a consistent format (e.g., status code, message).
-// 3. Use try/catch in async operations: Properly catch and forward errors to the middleware.
-// 4. Log errors: Utilize the Winston logger to log errors for monitoring and debugging.
+    const baseError = new BaseError(500, 'UNHANDLED_REJECTION', message, [
+      { message: errorDetails },
+    ]);
+
+    logger.error(baseError);
+  },
+);
+
+process.on('uncaughtException', (err: Error) => {
+  const baseError = new BaseError(500, 'UNCAUGHT_EXCEPTION', err.message, [
+    { message: err.stack },
+  ]);
+
+  logger.error(baseError);
+});

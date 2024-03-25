@@ -3,7 +3,7 @@ import config from '../config';
 import { UserManager } from './UserManager';
 import { RequestsManager } from './RequestsManager';
 import Redis from 'ioredis';
-
+import logger from '../lib/logger';
 
 const userManager = UserManager.getInstance();
 const requestsManager = new RequestsManager();
@@ -11,15 +11,13 @@ export class WebSocketService {
   private wsServer: WebSocketServer | null = null;
 
   constructor() {
-
-
-
-const redisSub = new Redis(config.redisUrl);
+    const redisSub = new Redis(config.redisUrl);
 
     redisSub.subscribe('new-message', (err) => {
-      if (err) console.error('Failed to subscribe to the chatMessages channel', err);
+      logger.info(111);
+      if (err)
+        logger.error('Failed to subscribe to the chatMessages channel', err);
     });
-
 
     redisSub.on('message', (channel, message) => {
       if (channel === 'new-message') {
@@ -38,7 +36,7 @@ const redisSub = new Redis(config.redisUrl);
       });
 
       socket.on('close', (code, reason) => {
-        console.log(
+        logger.info(
           `Client has disconnected; code ${code}, reason: ${reason.toString()}`,
         );
         userManager.remove(socket);
@@ -47,18 +45,18 @@ const redisSub = new Redis(config.redisUrl);
       socket.send('Welcome to the WebSocket server!');
     });
 
-    console.log(`WebSocket server is running on port ${config.wsPort}`);
+    logger.info(`WebSocket server is running on port ${config.wsPort}`);
   }
 
   broadcastMessage(data: any) {
-    userManager.sendToAll(data)
+    userManager.sendToAll(data);
   }
 
   static deleteMessage(id: string): void {
     userManager.sendToAll({
       event: 'delete-message',
       message: {
-        id
+        id,
       },
     });
   }

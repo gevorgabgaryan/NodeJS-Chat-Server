@@ -51,7 +51,6 @@ jest.mock('../src/config', () => ({
   JWTExpireIn: '1h',
 }));
 
-
 jest.mock('../src/websocket', () => {
   return {
     WebSocketService: {
