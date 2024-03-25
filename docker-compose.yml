@@ -24,7 +24,7 @@ services:
     container_name: redis
     image: redis
     ports:
-      - "8389:6379"
+      - "6379:6379"
     networks:
       - app-network
 
