@@ -7,10 +7,10 @@ export class UserManager {
   private constructor() {}
 
   public static getInstance(): UserManager {
-      if (!UserManager.instance) {
-          UserManager.instance = new UserManager();
-      }
-      return UserManager.instance;
+    if (!UserManager.instance) {
+      UserManager.instance = new UserManager();
+    }
+    return UserManager.instance;
   }
 
   add(socket: WebSocket): void {

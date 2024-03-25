@@ -8,6 +8,7 @@ services:
       - "${WS_PORT}:${WS_PORT}"
     depends_on:
       - mongo
+      - redis
     networks:
       - app-network
 

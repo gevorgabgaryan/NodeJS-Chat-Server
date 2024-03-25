@@ -63,7 +63,6 @@ export const validateAddMessage = (
   next();
 };
 
-
 export const validateParamsObjectId = (
   req: Request,
   res: Response,
