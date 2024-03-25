@@ -1,4 +1,5 @@
 import AuthService from '../../src/api/services/AuthService';
+import { UnAuthorizedError } from '../../src/errors/UnAuthorizedError';
 
 describe('AuthService', () => {
   it('should return a token for valid credentials', async () => {
@@ -6,14 +7,15 @@ describe('AuthService', () => {
     expect(token).toBeDefined();
   });
 
-  it('should return an error for invalid credentials', async () => {
-    const result = await AuthService.login('wrong', 'credentials');
-    expect(result).toBe('invalid credentials');
+  it('should throw an error for invalid credentials', async () => {
+    await expect(AuthService.login('wrong', 'credentials')).rejects.toThrow(
+      UnAuthorizedError,
+    );
   });
 
   it('should validate a token successfully', async () => {
-    const token = await AuthService.login('username', 'password');
-    const username = await AuthService.checkToken(token);
+    const data = await AuthService.login('username', 'password');
+    const username = await AuthService.checkToken(data.token);
     expect(username).toBe('username');
   });
 

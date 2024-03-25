@@ -1,4 +1,5 @@
 import config from '../../config';
+import logger from '../../lib/logger';
 import ChatRoom from '../models/ChatRoomModel';
 
 class DefaultChatRoom {
@@ -10,13 +11,13 @@ class DefaultChatRoom {
           name: 'Main',
         });
         await defaultRoom.save();
-        console.log('Default chat room created.');
+        logger.info('Default chat room created.');
       } else {
-        console.log('Default chat room already exists.');
+        logger.info('Default chat room already exists.');
       }
       config.defaultRoomId = defaultRoom._id.toString();
     } catch (error) {
-      console.error('Error creating or fetching default chat room:', error);
+      logger.error('Error creating or fetching default chat room:', error);
     }
   }
 }

@@ -18,5 +18,5 @@ export const addMessageSchema = Joi.object({
 export const tokenSchema = Joi.string().required();
 
 export const objectIdParamsSchema = Joi.object({
-  id: Joi.string().hex().length(24).required()
-})
+  id: Joi.string().hex().length(24).required(),
+});
