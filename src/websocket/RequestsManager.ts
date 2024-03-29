@@ -10,6 +10,7 @@ import { UnAuthorizedError } from '../errors/UnAuthorizedError';
 import { AppError } from '../errors/AppError';
 import logger from '../lib/logger';
 import { BaseError } from '../errors/BaseError';
+import { RedisPubSub } from '../lib/redis';
 
 export class RequestsManager {
   private callsList: { [key: string]: any } = {};
@@ -27,7 +28,6 @@ export class RequestsManager {
         try {
           const { error } = tokenSchema.validate(params.token);
           if (error) {
-            logger.error(`Token validation error: ${error.message}`);
             throw new UnAuthorizedError();
           }
 
@@ -35,7 +35,6 @@ export class RequestsManager {
           if (!username) {
             throw new UnAuthorizedError();
           }
-
           this.userManager.add(socket);
           socket.username = username;
           socket.isAuthenticated = true;
@@ -51,7 +50,10 @@ export class RequestsManager {
 
     this.registerCall(
       'new-message',
-      async (socket: AuthenticatedWebSocket, params: { message: string }) => {
+      async (
+        socket: AuthenticatedWebSocket,
+        params: { message: string }
+      ) => {
         try {
           const { error } = addMessageSchema.validate(params);
           if (error) {
@@ -78,11 +80,8 @@ export class RequestsManager {
             event: 'new-message',
             message: savedMessage,
           };
-
-          this.userManager.sendToAll(data);
-
-          const redisPub = new Redis(config.redisUrl);
-          redisPub.publish('chatMessages', JSON.stringify(data));
+          const redisPubSub = RedisPubSub.getInstance();
+          redisPubSub.publish('new-message', JSON.stringify(data))
         } catch (e) {
           if (e instanceof UnAuthorizedError) {
             return this.send(socket, e);

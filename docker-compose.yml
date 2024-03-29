@@ -29,9 +29,21 @@ services:
     networks:
       - app-network
 
+  nginx-proxy:
+    container_name: proxy
+    build:
+      dockerfile: Dockerfile
+      context: ./proxy
+    ports:
+      - 80:80
+    depends_on:
+      - app
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
+
 volumes:
   mongo-data:
     driver: local
