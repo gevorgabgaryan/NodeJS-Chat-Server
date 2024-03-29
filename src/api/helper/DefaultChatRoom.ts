@@ -11,9 +11,6 @@ class DefaultChatRoom {
           name: 'Main',
         });
         await defaultRoom.save();
-        logger.info('Default chat room created.');
-      } else {
-        logger.info('Default chat room already exists.');
       }
       config.defaultRoomId = defaultRoom._id.toString();
     } catch (error) {
