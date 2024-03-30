@@ -12,6 +12,7 @@ import { BaseError } from './errors/BaseError';
     await DefaultChatRoom.init();
     const webSocketService = new WebSocketService();
     await webSocketService.init();
+    console.log('App started')
   } catch (e) {
     logger.info(e);
     process.exit(1);
