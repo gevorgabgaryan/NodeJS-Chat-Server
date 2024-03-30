@@ -32,6 +32,7 @@ jobs:
           echo MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }} >> .env
           echo WS_PORT=${{ secrets.WS_PORT }} >> .env
           echo REDIS_URL=${{ secrets.REDIS_URL}} >> .env
+          echo "NODE_ENV=production" >> .env
           # cat .env
           NODE_ENV=production
 
@@ -46,8 +47,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: CHAT_APP
-          environment_name: CHATAPP-env
+          application_name: CHAT
+          environment_name: CHAT-env
           version_label: "ver-${{ github.sha }}"
           region: eu-north-1
           deployment_package: deploy.zip
