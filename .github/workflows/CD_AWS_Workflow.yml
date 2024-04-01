@@ -1,8 +1,6 @@
 name: Deploy on Dev
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -47,8 +45,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: CHAT
-          environment_name: CHAT-env
+          application_name: CHAT-APP
+          environment_name: CHAT-APP-env
           version_label: "ver-${{ github.sha }}"
           region: eu-north-1
           deployment_package: deploy.zip

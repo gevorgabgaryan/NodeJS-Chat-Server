@@ -7,7 +7,7 @@ const config = {
   JWTSecret: process.env.JWT_SECRET || '',
   JWTExpireIn: process.env.JWT_EXPIRE_IN,
   mongoDB: {
-    url: process.env.MONGO_DB_URL || 'mongodb://localhost:27019',
+    url: process.env.MONGO_DB_URL || 'mongodb://localhost:27017',
     dbName: process.env.MONGO_DB_NAME || 'CHAT',
   },
   defaultRoomId: '',
