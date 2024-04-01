@@ -28,6 +28,10 @@ jobs:
       - name: Generate and Upload .env File
         run: |
           ssh -o "StrictHostKeyChecking=no" ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "
+            if [ ! -d NodeJS-Chat-Server ]; then
+              echo 'NodeJS-Chat-Server directory does not exist. Cloning...'
+              git clone https://github.com/gevorgabgaryan/NodeJS-Chat-Server.git NodeJS-Chat-Server
+            fi
             echo 'Creating .env file...'
             cd NodeJS-Chat-Server &&
             touch .env &&
@@ -43,10 +47,20 @@ jobs:
           "
 
       - name: Pull latest changes and restart application
-        run: ssh -o "StrictHostKeyChecking=no" ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "
-            echo 'Deploying application...'
-            cd NodeJS-Chat-Server &&
-            git pull &&
-            docker-compose up --build -d
-            echo 'Deployment complete.'
+        run: |
+          ssh -o "StrictHostKeyChecking=no" ${{ secrets.SSH_USER }}@${{ secrets.DROPLET_IP }} "
+            if [ -d NodeJS-Chat-Server ] && [ -d NodeJS-Chat-Server/.git ]; then
+              echo 'Deploying application...'
+              cd NodeJS-Chat-Server &&
+              git pull &&
+              docker-compose up --build -d
+              echo 'Deployment complete.'
+            else
+              echo 'NodeJS-Chat-Server is not a valid Git repository. Cloning...'
+              git clone https://github.com/gevorgabgaryan/NodeJS-Chat-Server.git NodeJS-Chat-Server
+              cd NodeJS-Chat-Server &&
+              docker-compose up --build -d
+              echo 'Deployment complete.'
+            fi
           "
+
