@@ -14,4 +14,15 @@ export class BaseError extends Error {
     this.code = code;
     this.details = details;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      code: this.code,
+      userMessage: this.userMessage,
+      details: this.details,
+    };
+  }
 }
