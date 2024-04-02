@@ -4,8 +4,6 @@ import { WebSocket } from 'ws';
 import { AuthenticatedWebSocket } from './interface/AuthenticatedWebSocket';
 import { addMessageSchema, tokenSchema } from '../lib/validator';
 import ChatService from '../api/services/ChatService';
-import Redis from 'ioredis';
-import config from '../config';
 import { UnAuthorizedError } from '../errors/UnAuthorizedError';
 import { AppError } from '../errors/AppError';
 import logger from '../lib/logger';
@@ -83,6 +81,7 @@ export class RequestsManager {
           const redisPubSub = RedisPubSub.getInstance();
           redisPubSub.publish('new-message', JSON.stringify(data))
         } catch (e) {
+          logger.error(e)
           if (e instanceof UnAuthorizedError) {
             return this.send(socket, e);
           }
@@ -115,10 +114,15 @@ export class RequestsManager {
 
       await callObj.callback(socket, params);
     } catch (e: any) {
+      logger.error(e);
       if (e instanceof BaseError) {
         return this.send(socket, e);
       }
-      this.send(socket, new AppError());
+
+      if (e instanceof SyntaxError) {
+        return this.send(socket, new BaseError(400,  "BAD_REQUEST", `${e.message ? e.message: JSON.stringify(e).slice(0,100)}`));
+      }
+      this.send(socket, new AppError(e.message? e.message : "Unexpected error"));
     }
   }
 

@@ -35,7 +35,7 @@ export class RedisPubSub {
   }
 
   public onMessageReceived = (channel: string, message: string): void => {
-    console.log(`Message from ${channel}: ${message}`);
+
   };
 
   public close(): void {
